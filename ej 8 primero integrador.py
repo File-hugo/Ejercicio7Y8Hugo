@@ -14,34 +14,38 @@ cuenta.
 """
 
 class CuentaJoven:
-    def __init__(self,valorCuenta=0):#Constructor
+    def __init__(self,valorCuenta=0,sumaBonificacion=0):#Constructor
         self.__listaDeEdad=[]
-        contadorEdad=0
         self.__edad=""
         boolCorroboroNumeros=True
-        sumaBonificacion=0
         self.__sumaBonificacion=0
+        self.__contadorEdad=0
+        self.__x=0
+        #-
+        self.__retirarUno=""
+        self.__retirarDos=""
         #-
         self.__resultadoTitulo=[]
-        
-        salidaTituloOpcional=True
-        contadorTitulo=0
+        self.__salidaTituloOpcional=True
+        self.__contadorTitulo=0
         self.__bonificacion=0.5#5% de
         self.__valorCuenta=0        
         #----
         self.__resultadoCantidadUno=[]
         self.__engloboTodo={}
         self.__resultadoCantidadDos=[]
-
         self.__cantidadTitularUno = ""
         self.__cantidadTitularDos = ""
         self.__sumaCantidadUno=0
         self.__sumaCantidadDos=0
         self.__agrupoListaUno=[]
         self.__agrupoListaDos=[]
-        #--
-        
-        while contadorEdad<2:
+
+        self.__boolMayorMenorEdad=""
+####Otra funcion#########
+
+    def proceso(self):
+        while self.__contadorEdad<2:
             self.__edad = input('ingresa edad :')
             if self.__edad=="*":
                 break
@@ -56,7 +60,7 @@ class CuentaJoven:
             #elif int(self.__edad)>=10 or int(self.__edad)<150 :
             elif resultadoDigito:
                 boolCorroboroNumeros=True
-                contadorEdad+=1
+                self.__contadorEdad+=1
                     
             if boolCorroboroNumeros==True:
             #if boolCorroboroNumeros==True and int(self.__edad)>=0 and int(self.__edad)<150:
@@ -67,14 +71,14 @@ class CuentaJoven:
                 print("Edad debe ser entre 1 y 149")
         
         #-----  
-        while contadorTitulo<2:
+        while self.__contadorTitulo<2:
             self.__titularOpcional = input('ingresa titular opcional:')
             if self.__titularOpcional in "01233456789":
                 print("Debe tener solo letras")
-                salidaTituloOpcional=False           
+                self.__salidaTituloOpcional=False           
             elif self.__titularOpcional not in "0123456789":
-                contadorTitulo+=1
-                salidaTituloOpcional==True
+                self.__contadorTitulo+=1
+                self.__salidaTituloOpcional==True
                 #self.__resultadoTitulo.update({self.__titularOpcional:self.__edad})
                 self.__resultadoTitulo.append(self.__titularOpcional)
 
@@ -119,33 +123,57 @@ class CuentaJoven:
         
         self.__resultadoTitulo.append(self.__sumaCantidadDos)
         print(self.__resultadoTitulo)
-    #-Otra funcion-----------------------
+    
+    #Otra funcion#
+    def titular_valido(self):
+        global x
+        
+        for x in (self.__listaDeEdad):
+            if int(x)<18:
+                self.__boolMayorMenorEdad=False#Porque es menor de edad
+                #print( "Error "+x+" años es = a menor de edad. No puede retirar $")
+
+            elif int(x)>=18:
+                self.__boolMayorMenorEdad=True              
+                        ######Retiro dinero titular 1###
+                self.__retirarUno=input("Cuanto deseas retirar el titular uno:?")
+                self.__retirarDos=input("Cuanto deseas retirar el titular dos:?")
+                
+                if self.__retirarUno.isdigit() <0 or self.__retirarDos.isdigit()<0:
+                    print("Error, no puede ser cero")      
+                else:
+                    if self.__retirarUno.isdigit() and self.__retirarUno!="":
+                        self.__cantidadNuevaTitularUno=self.__sumaCantidadUno-float(self.__retirarUno)
+                        self.__cantidadNuevaTitularUno=self.__bonificacion*self.__cantidadNuevaTitularUno
+                        #print("Tienes ahora", self.__cantidadNuevaTitularUno, "$", "porque retiraste", self.__retirarUno)
+                    
+                    if self.__retirarDos.isdigit() and self.__retirarDos!="" :
+                        self.__cantidadNuevaTitularDos=self.__sumaCantidadDos-float(self.__retirarDos)    
+                        self.__cantidadNuevaTitularDos=self.__bonificacion*self.__cantidadNuevaTitularDos
+                        self.__sumaBonificacion=int(self.__sumaBonificacion)  
+                        #print("Tienes ahora", self.__cantidadNuevaTitularDos, "$", "porque retiraste", self.__retirarDos)              
+        return self.__boolMayorMenorEdad     
     def get_edad(self):
         return get_edad
     
     def set_edad(self):
-        return get_edad
+        return self.__edad
     
-    def titular_valido(self):
-        for x in (self.__listaDeEdad):
-            if int(x)>=18:
-                boolMayorEdad=True
-                self.__sumaBonificacion=int(x)*self.__valorCuenta
-                self.__sumaBonificacion=int(self.__sumaBonificacion)
-        #Retira dinero
-            elif int(x)<18:
-                boolMayorEdad=False#Porque es menor de edad
     def mostrar(self):
-        #return self.__listaDeEdad
-        #return self.__titularOpcional
-        #return self.__valorCuenta
-        print("Error "+x+" años es = menor de edad. No puede retirar $")
-        print("Exito ",self.__sumaCantidadUno," es la suma sin bonificacion del titular uno" ,self.__resultadoTitulo[0],".", x, "años es = mayor de edad")
+            #return self.__listaDeEdad
+            #return self.__titularOpcional
+            #return self.__valorCuenta
+        if self.__boolMayorMenorEdad==True:            
+            print("Tienes ahora", self.__cantidadNuevaTitularUno, "$", "porque retiraste", self.__retirarUno)              
+            print("Tienes ahora", self.__cantidadNuevaTitularDos, "$", "porque retiraste", self.__retirarDos)              
+        elif self.__boolMayorMenorEdad==False:
+            print( "Error "+x+" años es = a menor de edad. No puede retirar $")
 
 instancioUno=CuentaJoven()
+instancioUno.proceso()
 instancioUno.titular_valido()
 instancioUno.mostrar()
-
+#print()
         #self.__engloboTodo.update({self.__titularOpcional:self.__edad})
         #self.__resultadoTitulo.append(self.__titularOpcional)
 #         if contadorTitulo==2:
